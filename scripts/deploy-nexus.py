@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """构建产物上传到 Komari 并切换为当前主题。
 用法: deploy-nexus.py <zip> [--no-activate]
-凭据: 环境变量 KOMARI_PASSWORD，或 ~/.hermes/cache/scratch/komari-admin.pw（0600）。
+凭据: 环境变量 KOMARI_PASSWORD，或 ~/.config/komari/admin.pw（0600，原文存于 Bitwarden「Komari 监控面板」）。
 """
 import json, os, sys, uuid, urllib.request, urllib.error, http.cookiejar
 
 BASE = os.environ.get("KOMARI_BASE", "http://127.0.0.1:25774")
 USER = os.environ.get("KOMARI_USER", "admin")
-PWF = os.path.expanduser("~/.hermes/cache/scratch/komari-admin.pw")
+PWF = os.path.expanduser("~/.config/komari/admin.pw")
 jar = http.cookiejar.CookieJar()
 op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
 UA = {"Origin": BASE, "User-Agent": "Mozilla/5.0 komari-nexus-deploy"}
