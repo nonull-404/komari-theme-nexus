@@ -327,6 +327,7 @@ onMounted(async () => {
           </div>
         </CardX>
         <CardX
+          v-if="appStore.summaryCardMode === 'finance'"
           hoverable
           class="absolute top-0 left-1/2 z-20 h-42 w-[260%] max-w-88 -translate-x-[50%] -translate-y-[25%] rounded-md border-none shadow-[0_0_20px,0_0_0_1px] shadow-emerald-600/10 transition-all"
           :class="[
