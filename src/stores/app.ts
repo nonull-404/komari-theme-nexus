@@ -168,6 +168,12 @@ const useAppStore = defineStore('app', () => {
   })
 
   // 计算属性：离线节点后置（默认顺序下离线节点排到所有节点最后）
+  // [nexus] 汇总区第三张卡：fleet=在线节点概览（默认），finance=上游的剩余价值卡
+  const summaryCardMode = computed<'fleet' | 'finance'>(() => {
+    const v = publicSettings.value?.theme_settings?.summaryCardMode
+    return v === 'finance' ? 'finance' : 'fleet'
+  })
+
   const offlineNodesLast = computed<boolean>(() => {
     const settings = publicSettings.value?.theme_settings
     if (settings && typeof settings.offlineNodesLast === 'boolean') {
@@ -358,6 +364,7 @@ const useAppStore = defineStore('app', () => {
     disablePageAnimation,
     pingNetworkOrder,
     offlineNodesLast,
+    summaryCardMode,
     icpEnabled,
     icpNumber,
     icpUrl,

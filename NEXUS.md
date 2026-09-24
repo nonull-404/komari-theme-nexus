@@ -42,6 +42,9 @@ git checkout nexus && git merge master   # 解决冲突后 bun run build 验证
 - 主题标识改为 `Nexus`（short），与上游 `Emerald` 可以并存，互不覆盖
 - 产物命名 `komari-theme-nexus-build-<sha>.zip`
 - 页脚链接指向本仓库；浏览器缓存键改为 `komari-theme-nexus:*`，不与上游主题串数据
+- 汇总区第三张卡默认改为「在线节点 x/总数 + 离线名单」，原版「剩余价值/汇率」卡保留，可在主题设置 `summaryCardMode=finance` 切回；非财务模式不再请求外部汇率接口
+
+所有改动在代码里用 `[nexus]` 注释标出，方便合并上游时定位。
 
 ## 代码入口
 

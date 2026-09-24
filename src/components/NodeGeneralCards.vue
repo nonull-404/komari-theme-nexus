@@ -37,6 +37,11 @@ const metricSwitchTransitionProps = computed(() => ({
 
 const openFinanceCard = ref(false)
 
+// [nexus] 在线节点概览
+const fleetTotal = computed(() => summaryNodes.value.length)
+const fleetOnline = computed(() => summaryNodes.value.filter(node => node.online).length)
+const fleetOfflineNames = computed(() => summaryNodes.value.filter(node => !node.online).map(node => node.name))
+
 function getMetricSwitchStyle(index: number): Record<string, string> {
   return {
     '--metric-switch-delay': `${index * 35}ms`,
@@ -177,6 +182,9 @@ onMounted(async () => {
   exchangeRateBaseCurrency.value = financeHelper.getStoredFinanceCurrency()
   excludeFreeNodes.value = financeHelper.shouldExcludeFreeNodes()
 
+  // [nexus] 只有启用财务卡时才去拉外部汇率
+  if (appStore.summaryCardMode !== 'finance')
+    return
   const { rates } = await financeHelper.getDailyExchangeRates()
   exchangeRates.value = rates
 })
@@ -256,6 +264,40 @@ onMounted(async () => {
         :class="showVisualPanel ? 'col-span-4 row-span-1 col-start-5 row-start-1' : 'col-span-1 row-start-1 col-start-2 min-h-18 md:min-h-24 md:row-start-1 md:col-start-3'"
       >
         <CardX
+          v-if="appStore.summaryCardMode === 'fleet'"
+          hoverable
+          class="group h-full border-none rounded-md transition-all"
+          :class="pickSurfaceClass('bg-background/60 hover:bg-background', 'bg-background/50 hover:bg-background backdrop-blur-xs')"
+          content-class="h-full !p-3"
+        >
+          <div class="flex h-full flex-col justify-between gap-1">
+            <div class="flex items-start justify-between">
+              <span class="text-xs font-medium tracking-wider text-muted-foreground">在线节点</span>
+              <Icon
+                icon="tabler:topology-star-3" :width="20" :height="20"
+                class="text-slate-500/20 group-hover:text-slate-500 transition-colors"
+              />
+            </div>
+            <Transition v-bind="metricSwitchTransitionProps">
+              <div
+                :key="`fleet-${summaryTransitionKey}`" class="flex items-baseline gap-1 min-w-0"
+                :style="getMetricSwitchStyle(2)"
+              >
+                <span
+                  class="text-md md:text-2xl font-bold leading-none tracking-tight"
+                  :class="fleetOfflineNames.length ? 'text-amber-500' : 'text-emerald-600 dark:text-emerald-400'"
+                >
+                  {{ fleetOnline }}
+                </span>
+                <span class="block truncate text-[11px] md:text-xs font-medium text-muted-foreground" :title="fleetOfflineNames.join('、')">
+                  / {{ fleetTotal }}{{ fleetOfflineNames.length ? ` · 离线 ${fleetOfflineNames.join('、')}` : ' · 全部在线' }}
+                </span>
+              </div>
+            </Transition>
+          </div>
+        </CardX>
+        <CardX
+          v-if="appStore.summaryCardMode === 'finance'"
           hoverable
           class="group h-full border-none rounded-md transition-all"
           :class="pickSurfaceClass('bg-background/60 hover:bg-background', 'bg-background/50 hover:bg-background backdrop-blur-xs')"
